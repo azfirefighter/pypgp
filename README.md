@@ -10,8 +10,6 @@ You need python-gnupg package for script to run, install it with:
 ### Preparation
 Clone this repo by typing 
 
-<br />
-
 `git clone https://gitlab.com/nikolal/pypgp.git` and then change into working folder:
 
 `cd pypgp`
