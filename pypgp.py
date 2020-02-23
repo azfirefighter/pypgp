@@ -44,37 +44,18 @@ if any(providername in i for i in servers):
 if any(providername in i for i in cockliservers):
     server = 'mail.cock.li'
 query = str(input('Attach your public key? (yes|no): ')).lower()
-if query == 'yes':
-    msg = MIMEMultipart()
-    msg['From'] = username
-    RecipientFingerprint = str(input('Recipient fingerprint or email address associated with that fingerprint: '))
-    RecipientID = RecipientFingerprint.replace(' ','')
-    Recipient = str(input('Recipient email: '))
-    msg['To'] = Recipient
-    msg['Subject'] = 'PGP message'
-    mailbody = str(input('Enter your secret message: '))
-    secretmessage = (str(gpg.encrypt(mailbody, RecipientID )))
-    msg.attach(MIMEText(secretmessage, 'plain'))
+
+msg = MIMEMultipart()
+
+def attachment():
     publickey = 'publickey.txt'
     p = MIMEBase('application', 'octet-stream')
     p.set_payload(open(userpath + '/publickey.txt', 'rb').read())
     encoders.encode_base64(p)
     p.add_header('Content-Disposition', "attachment; filename= %s" % publickey)
     msg.attach(p)
-    smtpObj = smtplib.SMTP(server, TLS_port)
-    smtpObj.ehlo()
-    smtpObj.starttls()
-    smtpObj.ehlo()
-    smtpObj.login(username, password)
-    print('Your encrypted message: \n', secretmessage)
-    try:
-        smtpObj.sendmail(username, Recipient, msg.as_string())
-        smtpObj.close()
-        print('\nMessage successfully sent!')
-    except Exception as e:
-        print(e)
-elif query == 'no':
-    msg = MIMEMultipart()
+
+def email():
     msg['From'] = username
     RecipientFingerprint = str(input('Recipient fingerprint or email address associated with that fingerprint: '))
     RecipientID = RecipientFingerprint.replace(' ','')
@@ -84,18 +65,29 @@ elif query == 'no':
     mailbody = str(input('Enter your secret message: '))
     secretmessage = (str(gpg.encrypt(mailbody, RecipientID )))
     msg.attach(MIMEText(secretmessage, 'plain'))
+    return Recipient
+
+def authentication(Recipient):
     smtpObj = smtplib.SMTP(server, TLS_port)
     smtpObj.ehlo()
     smtpObj.starttls()
     smtpObj.ehlo()
     smtpObj.login(username, password)
-    print('Your encrypted message: \n', secretmessage)
     try:
         smtpObj.sendmail(username, Recipient, msg.as_string())
         smtpObj.close()
-        print('\nMessage successfully sent!\n')
+        print('\nMessage successfully sent!')
     except Exception as e:
         print(e)
+
+if query == 'yes':
+    Recipient = email()
+    attachment()
+    authentication(Recipient)
+    
+elif query == 'no':
+    email()
+    authentication(Recipient)
 else:
     print('Please type in yes or no.')
 os.remove(userpath + '/publickey.txt')
