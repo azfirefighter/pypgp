@@ -6,8 +6,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+
 servers = ['disroot.org', 'gmail.com', 'posteo.net', 'yahoo.com', 'live.com']
 cockliservers = ['cock.li','airmail.cc','420blaze.it','aaathats3as.com','cumallover.me','goat.si','horsefucker.org','national.shitposting','nigge.rs','tfwno.gf','cock.lu','cock.email','firemail.cc','hitler.rocks','getbackinthe.kitchen','memeware.net','cocaine.ninja','waifu.club','rape.lol','nuke.africa']
+
 userpath = os.getcwd()
 user = getpass.getuser()
 encryptedpassword = open('password.txt.asc').read()
@@ -25,6 +27,7 @@ decryptedusername = str(gpg.decrypt(encryptedusername))
 username = decryptedusername.partition('\n')[0]
 providername = username.split('@',1)[1]
 TLS_port = 587
+
 if any(providername in i for i in servers):
     if providername == 'disroot.org':
         server = providername
@@ -41,6 +44,7 @@ if any(providername in i for i in servers):
         server = 'smtp.live.com'
     else:
         print('Provider not in the list of providers, contact maintainer of this project for adding provider you use to list.')
+
 if any(providername in i for i in cockliservers):
     server = 'mail.cock.li'
 query = str(input('Attach your public key? (yes|no): ')).lower()
